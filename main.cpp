@@ -71,9 +71,82 @@ write 3 UDTs below that EACH have:
 
  */
 
+#include <iostream>
+#include <utility>
+
 /*
  copied UDT 1:
  */
+class Animal
+{
+public:
+    Animal(std::string name, unsigned int numberOfLegs, bool canRun = false);
+    ~Animal();
+
+    void startRunning();
+    void stopRunning();
+    void travel(int numberOfSteps);
+
+
+private:
+    std::string mName;
+    unsigned int mNumberOfLegs, mLastStep = 0, mFeetTraveled = 0;
+    bool mCanRun, mIsRunning = false;
+};
+
+Animal::Animal(std::string name, unsigned int numberOfLegs, bool canRun)
+    : mName(std::move(name)), mNumberOfLegs(numberOfLegs)
+{
+    if (canRun && numberOfLegs < 2) {
+        std::cout << "Animals " << mName << " needs at least 2 legs to run" << std::endl;
+        mCanRun = false;
+    } else
+    {
+        mCanRun = canRun;
+    }
+}
+
+Animal::~Animal()
+{
+    std::cout << "Animal " << mName << " traveled " << mFeetTraveled << " feet" << std::endl;
+}
+
+void Animal::startRunning()
+{
+    if (mCanRun)
+    {
+        mIsRunning = true;
+    } else
+    {
+        std::cout << "Animal " << mName << " cannot run" << std::endl;
+    }
+}
+
+void Animal::stopRunning()
+{
+    mIsRunning = false;
+}
+
+void Animal::travel(int numberOfSteps)
+{
+    if (mNumberOfLegs == 0)
+    {
+        std::cout << "Animal " << mName << " has no legs and rolls across the ground 1 foot" << std::endl;
+        mFeetTraveled++;
+        return;
+    }
+    unsigned int start = mFeetTraveled;
+    for (int i = 0; i < numberOfSteps; i++)
+    {
+        mLastStep++;
+        if (mLastStep >= mNumberOfLegs)
+        {
+            mLastStep = 0;
+            mFeetTraveled += mIsRunning ? 2 : 1;
+        }
+    }
+    std::cout << "Animal " << mName << " traveled " << (mFeetTraveled - start) << " feet in " << numberOfSteps << " steps" << std::endl;
+}
 
 /*
  copied UDT 2:
@@ -107,8 +180,30 @@ write 3 UDTs below that EACH have:
  Wait for my code review.
  */
 
-#include <iostream>
 int main()
 {
+    Animal pogoFrog {"Pogo Frog", 1, true};
+    pogoFrog.travel(2);
+    pogoFrog.startRunning();
+    pogoFrog.travel(2);
+    pogoFrog.stopRunning();
+    pogoFrog.travel(1);
+
+    Animal fishOutOfWater {"Fish", 0};
+    fishOutOfWater.travel(2);
+    fishOutOfWater.startRunning();
+    fishOutOfWater.travel(2);
+    fishOutOfWater.stopRunning();
+    fishOutOfWater.travel(1);
+
+    Animal dog {"Dog", 4, true};
+    dog.travel(2);
+    dog.startRunning();
+    dog.travel(2);
+    dog.stopRunning();
+    dog.travel(1);
+
+
+
     std::cout << "good to go!" << std::endl;
 }
