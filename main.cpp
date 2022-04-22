@@ -221,6 +221,100 @@ std::string PivotString::reverse(std::string string)
 /*
  copied UDT 3:
  */
+struct SummingStruct
+{
+    SummingStruct(float first, float second);
+
+    ~SummingStruct();
+
+    void setInteger(int newValue);
+
+    double sumAll() const;
+
+    float sumFloats() const;
+
+    int integer = 0;
+    double firstDouble, secondDouble;
+    float firstFloat, secondFloat;
+
+    struct MultiplierStruct
+    {
+        explicit MultiplierStruct(const SummingStruct& summingStruct);
+
+        ~MultiplierStruct();
+
+        void incrementInteger(unsigned int added);
+
+        double multiplyAll() const;
+
+        float multiplyFloats() const;
+
+        int integer = 0;
+        double firstDouble, secondDouble;
+        float firstFloat, secondFloat;
+    };
+};
+
+SummingStruct::SummingStruct(float first, float second) :
+        firstDouble(static_cast<double>(first)),
+        secondDouble(static_cast<double>(second)),
+        firstFloat(first),
+        secondFloat(second) { }
+
+SummingStruct::~SummingStruct()
+{
+    std::cout << "SummingStruct destroyed" << std::endl;
+}
+
+void SummingStruct::setInteger(int newValue)
+{
+    integer = 0;
+    while (integer < abs(newValue))
+    {
+            integer++;
+    }
+}
+
+double SummingStruct::sumAll() const
+{
+    return sumFloats() + firstDouble + secondDouble + integer;
+}
+
+float SummingStruct::sumFloats() const
+{
+    return firstFloat + secondFloat;
+}
+
+SummingStruct::MultiplierStruct::MultiplierStruct(const SummingStruct& summingStruct) :
+        firstFloat(summingStruct.firstFloat),
+        secondFloat(summingStruct.secondFloat),
+        firstDouble(summingStruct.firstDouble),
+        secondDouble(summingStruct.secondDouble) { }
+
+SummingStruct::MultiplierStruct::~MultiplierStruct()
+{
+    std::cout << "MultiplierStruct destroyed" << std::endl;
+}
+
+void SummingStruct::MultiplierStruct::incrementInteger(unsigned int added)
+{
+    while (added > 0)
+    {
+        added--;
+        integer++;
+    }
+}
+
+double SummingStruct::MultiplierStruct::multiplyAll() const
+{
+    return multiplyFloats() * firstDouble * secondDouble * integer;
+}
+
+float SummingStruct::MultiplierStruct::multiplyFloats() const
+{
+    return firstFloat * secondFloat;
+}
+
 
 /*
  new UDT 4:
@@ -280,6 +374,18 @@ int main()
     std::cout << "PivotString mangled = " << mangled.getFull() << std::endl;
     std::cout << "PivotString first = " << first.getFull() << std::endl;
     std::cout << "PivotString last = " << last.getFull() << std::endl;
+    std::cout << std::endl;
+
+    SummingStruct summing {1.1f, 2.0f};
+    summing.setInteger(-2);
+    std::cout << "sumFloats = " << summing.sumFloats() << std::endl;
+    std::cout << "sumAll = " << summing.sumAll() << std::endl;
+    std::cout << std::endl;
+
+    SummingStruct::MultiplierStruct multiplier {summing};
+    multiplier.incrementInteger(3);
+    std::cout << "multiplyFloats = " << multiplier.multiplyFloats() << std::endl;
+    std::cout << "multiplyAll = " << multiplier.multiplyAll() << std::endl;
     std::cout << std::endl;
 
     std::cout << "good to go!" << std::endl;
