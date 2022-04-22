@@ -164,7 +164,6 @@ public:
 
     std::string reverse(std::string string);
 
-private:
     int mPivotIndex, mCalls = 0;
     std::string mString;
     bool mReverseString, mReversePivot;
@@ -320,6 +319,50 @@ float SummingStruct::MultiplierStruct::multiplyFloats() const
  new UDT 4:
  with 2 member functions
  */
+struct FancyPrinter
+{
+public:
+    FancyPrinter(const PivotString &p1, const PivotString &p2);
+
+    ~FancyPrinter();
+
+    void print() const;
+
+    static void getParts(PivotString p, std::string& s1, std::string& s2);
+
+private:
+    PivotString p1, p2;
+};
+
+FancyPrinter::FancyPrinter(const PivotString &p1, const PivotString &p2) : p1(p1), p2(p2) { }
+
+FancyPrinter::~FancyPrinter()
+{
+    std::cout << "FancyPrinter called it's PivotStrings " << p1.mCalls + p2.mCalls << " times" << std::endl;
+}
+
+void FancyPrinter::print() const {
+    std::string s1, s2, s3, s4;
+    getParts(p1, s1, s3);
+    getParts(p2, s2, s4);
+    std::cout << s1 << s2 << s3 << s4 << std::endl;
+}
+
+void FancyPrinter::getParts(PivotString p, std::string& s1, std::string& s2) {
+    if (p.mReversePivot) {
+        s1 = p.getPart(false);
+        s2 = p.getPart();
+    } else
+    {
+        s1 = p.getPart();
+        s2 = p.getPart(false);
+    }
+    if (p.mReverseString)
+    {
+        s1 = p.reverse(s1);
+        s2 = p.reverse(s2);
+    }
+}
 
 /*
  new UDT 5:
@@ -386,6 +429,10 @@ int main()
     multiplier.incrementInteger(3);
     std::cout << "multiplyFloats = " << multiplier.multiplyFloats() << std::endl;
     std::cout << "multiplyAll = " << multiplier.multiplyAll() << std::endl;
+    std::cout << std::endl;
+
+    FancyPrinter p {simple, mangled};
+    p.print();
     std::cout << std::endl;
 
     std::cout << "good to go!" << std::endl;
