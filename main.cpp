@@ -112,7 +112,7 @@ public:
 
     private:
         bool mIs24Hour;
-        bool *mIsAM = nullptr;
+        bool *mIsAM = nullptr; FIXME: pointers have not be introduced yet, safe pointer usage is not being demonstrated in this project.  Remove this member variable.
         int mHour = 0, mMinute = 0, mSecond = 0;
     };
 
@@ -130,7 +130,7 @@ Animal::Animal(std::string name, unsigned int numberOfLegs, bool canRun)
         std::cout << "Animals " << mName << " needs at least 2 legs to run"
                   << std::endl;
         mCanRun = false;
-    } else
+    } else FIXME: curly braces go on their own line with no other code
     {
         mCanRun = canRun;
     }
@@ -147,7 +147,7 @@ void Animal::startRunning()
     if (mCanRun)
     {
         mIsRunning = true;
-    } else
+    } else FIXME: curly braces go on their own line with no other code
     {
         std::cout << "Animal " << mName << " cannot run" << std::endl;
     }
@@ -165,13 +165,13 @@ void Animal::travel(int numberOfSteps)
         std::cout << "Animal " << mName
                   << " has no legs and rolls across the ground 1 foot"
                   << std::endl;
-        mFeetTraveled++;
+        mFeetTraveled++; FIXME: use pre-increment/decrement, not post-increment/decrement
         return;
     }
     unsigned int start = mFeetTraveled;
-    for (int i = 0; i < numberOfSteps; i++)
+    for (int i = 0; i < numberOfSteps; i++) FIXME: use pre-increment/decrement, not post-increment/decrement
     {
-        mLastStep++;
+        mLastStep++; FIXME: use pre-increment/decrement, not post-increment/decrement
         if (mLastStep >= mNumberOfLegs)
         {
             mLastStep = 0;
@@ -215,14 +215,14 @@ Animal::Clock::~Clock()
 
 void Animal::Clock::incrementHour()
 {
-    mHour++;
+    mHour++; FIXME: use pre-increment/decrement, not post-increment/decrement
     if (mIs24Hour)
     {
         if (mHour == 24)
         {
             mHour = 0;
         }
-    } else
+    } else FIXME: curly braces go on their own line with no other code
     {
         switch (mHour)
         {
@@ -241,7 +241,7 @@ void Animal::Clock::incrementHour()
 
 void Animal::Clock::incrementMinute(bool silent)
 {
-    mMinute++;
+    mMinute++; FIXME: use pre-increment/decrement, not post-increment/decrement
     if (mMinute == 60)
     {
         mMinute = 0;
@@ -263,7 +263,7 @@ void Animal::Clock::incrementMinute(bool silent)
 
 void Animal::Clock::incrementSecond(bool silent)
 {
-    mSecond++;
+    mSecond++; FIXME: use pre-increment/decrement, not post-increment/decrement
     if (!silent)
     {
         std::cout << (mSecond % 2 ? "tick" : "tock") << std::endl;
@@ -280,15 +280,15 @@ void Animal::Clock::wind(
         unsigned int minutes,
         unsigned int seconds)
 {
-    for (unsigned int s = 0; s < seconds; s++)
+    for (unsigned int s = 0; s < seconds; s++) FIXME: use pre-increment/decrement, not post-increment/decrement
     {
         incrementSecond(true);
     }
-    for (unsigned int m = 0; m < minutes; m++)
+    for (unsigned int m = 0; m < minutes; m++) FIXME: use pre-increment/decrement, not post-increment/decrement
     {
         incrementMinute(true);
     }
-    for (unsigned int h = 0; h < hours; h++)
+    for (unsigned int h = 0; h < hours; h++) FIXME: use pre-increment/decrement, not post-increment/decrement
     {
         incrementHour();
     }
@@ -342,11 +342,11 @@ PivotString::~PivotString()
 
 std::string PivotString::getPart(bool first)
 {
-    mCalls++;
+    mCalls++; FIXME: use pre-increment/decrement, not post-increment/decrement
     if (first)
     {
         return mString.substr(0, mPivotIndex);
-    } else
+    } else FIXME: curly braces go on their own line with no other code
     {
         return mString.substr(mPivotIndex, mString.length() - mPivotIndex);
     }
@@ -354,7 +354,7 @@ std::string PivotString::getPart(bool first)
 
 std::string PivotString::getFull()
 {
-    mCalls++;
+    mCalls++; FIXME: use pre-increment/decrement, not post-increment/decrement
     std::string first = getPart();
     std::string second = getPart(false);
     if (mReverseString)
@@ -367,7 +367,7 @@ std::string PivotString::getFull()
 
 std::string PivotString::reverse(std::string string)
 {
-    mCalls++;
+    mCalls++; FIXME: use pre-increment/decrement, not post-increment/decrement
     std::string reversed;
     while (reversed.length() < string.length())
     {
@@ -432,7 +432,7 @@ void SummingStruct::setInteger(int newValue)
     integer = 0;
     while (integer < abs(newValue))
     {
-        integer++;
+        integer++; FIXME: use pre-increment/decrement, not post-increment/decrement
     }
 }
 
@@ -464,8 +464,8 @@ void SummingStruct::MultiplierStruct::incrementInteger(unsigned int added)
 {
     while (added > 0)
     {
-        added--;
-        integer++;
+        added--; FIXME: use pre-increment/decrement, not post-increment/decrement
+        integer++; FIXME: use pre-increment/decrement, not post-increment/decrement
     }
 }
 
@@ -523,7 +523,7 @@ void FancyPrinter::getParts(PivotString p, std::string &s1, std::string &s2)
     {
         s1 = p.getPart(false);
         s2 = p.getPart();
-    } else
+    } else FIXME: curly braces go on their own line with no other code
     {
         s1 = p.getPart();
         s2 = p.getPart(false);
