@@ -194,7 +194,7 @@ Animal::Clock::Clock(bool is24Hour) : mIs24Hour(is24Hour)
 Animal::Clock::~Clock()
 {
     std::string suffix;
-    if (!mIs24Hour)
+    if (!mIs24Hour && mIsAM != nullptr)
     {
         suffix = *mIsAM ? "AM" : "PM";
         delete mIsAM;
@@ -227,7 +227,10 @@ void Animal::Clock::incrementHour()
         switch (mHour)
         {
             case 12:
-                *mIsAM = !*mIsAM;
+                if (mIsAM != nullptr)
+                {
+                    *mIsAM = !*mIsAM;
+                }
                 break;
             case 13:
                 mHour = 1;
@@ -622,7 +625,7 @@ int main()
     clock2->wind(12, 59, 58);
     clock2->incrementSecond();
     clock2->incrementSecond();
-    delete clock1;
+    delete clock2;
     std::cout << std::endl;
 
     PivotString simple{"simple"};
