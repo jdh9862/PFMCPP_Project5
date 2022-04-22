@@ -368,6 +368,37 @@ void FancyPrinter::getParts(PivotString p, std::string& s1, std::string& s2) {
  new UDT 5:
  with 2 member functions
  */
+struct DividingStruct
+{
+    explicit DividingStruct(const SummingStruct &summing);
+    ~DividingStruct();
+
+    double divide();
+
+    void modifyIntegers(unsigned int i);
+
+    SummingStruct summing;
+    SummingStruct::MultiplierStruct multiplier;
+};
+
+DividingStruct::DividingStruct(const SummingStruct &summing) : summing(summing), multiplier(summing) { }
+
+DividingStruct::~DividingStruct()
+{
+    std::cout << "DividingStruct destroyed" << std::endl;
+}
+
+
+double DividingStruct::divide()
+{
+    return multiplier.multiplyAll() / summing.sumAll();
+}
+
+void DividingStruct::modifyIntegers(unsigned int i)
+{
+    summing.setInteger(int(i));
+    multiplier.incrementInteger(i);
+}
 
 /*
  MAKE SURE YOU ARE NOT ON THE MASTER BRANCH
@@ -433,6 +464,13 @@ int main()
 
     FancyPrinter p {simple, mangled};
     p.print();
+    std::cout << std::endl;
+
+    DividingStruct divider {summing};
+    // Result will be zero because the multiplier's integer has not been incremented
+    std::cout << "divide before = " << divider.divide() << std::endl;
+    divider.modifyIntegers(1);
+    std::cout << "divide after = " << divider.divide() << std::endl;
     std::cout << std::endl;
 
     std::cout << "good to go!" << std::endl;
