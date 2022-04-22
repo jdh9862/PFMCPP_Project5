@@ -87,6 +87,22 @@ public:
     void stopRunning();
     void travel(int numberOfSteps);
 
+    class Clock
+    {
+    public:
+        Clock(bool is24Hour);
+        ~Clock();
+
+        void incrementHour();
+        void incrementMinute(bool silent=false);
+        void incrementSecond(bool silent=false);
+        void wind(unsigned int hours, unsigned int minutes, unsigned int seconds);
+
+    private:
+        bool mIs24Hour;
+        bool* mIsAM = nullptr;
+        int mHour = 0, mMinute = 0, mSecond = 0;
+    };
 
 private:
     std::string mName;
@@ -146,6 +162,109 @@ void Animal::travel(int numberOfSteps)
         }
     }
     std::cout << "Animal " << mName << " traveled " << (mFeetTraveled - start) << " feet in " << numberOfSteps << " steps" << std::endl;
+}
+
+Animal::Clock::Clock(bool is24Hour) : mIs24Hour(is24Hour)
+{
+    if (!is24Hour)
+    {
+        mIsAM = new bool(true);
+        mHour = 12;
+    }
+}
+
+Animal::Clock::~Clock()
+{
+    std::string suffix;
+    if (!mIs24Hour)
+    {
+       suffix = *mIsAM ? "AM" : "PM";
+       delete mIsAM;
+    }
+    std::string mPrefix;
+    if (mMinute < 10)
+    {
+        mPrefix = "0";
+    }
+    std::string sPrefix;
+    if (mSecond < 10)
+    {
+        sPrefix = "0";
+    }
+    std::cout << "The time is " << mHour << ":" << mPrefix << mMinute << ":" << sPrefix << mSecond << suffix << std::endl;
+}
+
+void Animal::Clock::incrementHour()
+{
+    mHour++;
+    if (mIs24Hour)
+    {
+        if (mHour == 24)
+        {
+            mHour = 0;
+        }
+    } else
+    {
+        switch (mHour)
+        {
+            case 12:
+                *mIsAM = !*mIsAM;
+                break;
+            case 13:
+                mHour = 1;
+                break;
+        }
+    }
+}
+
+void Animal::Clock::incrementMinute(bool silent)
+{
+    mMinute++;
+    if (mMinute == 60)
+    {
+        mMinute = 0;
+        incrementHour();
+        if (!silent)
+        {
+            int num = mHour % 12;
+            if (num == 0)
+            {
+                num = 12;
+            }
+            for (int i = 0; i < num; i++)
+            {
+                std::cout << "Clang" << std::endl;
+            }
+        }
+    }
+}
+
+void Animal::Clock::incrementSecond(bool silent)
+{
+    mSecond++;
+    if (!silent) {
+        std::cout << (mSecond % 2 ? "tick" : "tock") << std::endl;
+    }
+    if (mSecond == 60)
+    {
+        mSecond = 0;
+        incrementMinute(silent);
+    }
+}
+
+void Animal::Clock::wind(unsigned int hours, unsigned int minutes, unsigned int seconds) {
+    for (int s = 0; s < seconds; s++)
+    {
+        incrementSecond(true);
+    }
+    for (int m = 0; m < minutes; m++)
+    {
+        incrementMinute(true);
+    }
+    for (int h = 0; h < hours; h++)
+    {
+        incrementHour();
+    }
 }
 
 /*
@@ -436,6 +555,20 @@ int main()
     dog.travel(2);
     dog.stopRunning();
     dog.travel(1);
+    std::cout << std::endl;
+
+    Animal::Clock* clock1 = new Animal::Clock(true);
+    clock1->wind(23, 59, 59);
+    clock1->incrementSecond();
+    clock1->incrementSecond();
+    delete clock1;
+    std::cout << std::endl;
+
+    Animal::Clock* clock2 = new Animal::Clock(false);
+    clock2->wind(12, 59, 58);
+    clock2->incrementSecond();
+    clock2->incrementSecond();
+    delete clock1;
     std::cout << std::endl;
 
     PivotString simple {"simple"};
