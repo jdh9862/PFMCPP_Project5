@@ -151,6 +151,72 @@ void Animal::travel(int numberOfSteps)
 /*
  copied UDT 2:
  */
+class PivotString
+{
+public:
+    explicit PivotString(const std::string &string, bool reversePivot = false, bool reverseString = false, int pivotIndex = -1);
+
+    ~PivotString();
+
+    std::string getPart(bool first = true);
+
+    std::string getFull();
+
+    std::string reverse(std::string string);
+
+private:
+    int mPivotIndex, mCalls = 0;
+    std::string mString;
+    bool mReverseString, mReversePivot;
+};
+
+PivotString::PivotString(const std::string &string, bool reversePivot, bool reverseString , int pivotIndex)
+    : mString(string), mReversePivot(reversePivot), mReverseString(reverseString)
+{
+    mPivotIndex = pivotIndex < 0 || pivotIndex > string.length() ? int(string.length() / 2) : pivotIndex;
+}
+
+PivotString::~PivotString()
+{
+    std::cout << "PivotString " << getFull() << " was called " << mCalls << " times" << std::endl;
+}
+
+std::string PivotString::getPart(bool first)
+{
+    mCalls++;
+    if (first)
+    {
+        return mString.substr(0, mPivotIndex);
+    } else
+    {
+        return mString.substr(mPivotIndex, mString.length() - mPivotIndex);
+    }
+}
+
+std::string PivotString::getFull()
+{
+    mCalls++;
+    std::string first = getPart();
+    std::string second = getPart(false);
+    if (mReverseString)
+    {
+        first = reverse(first);
+        second = reverse(second);
+    }
+    return mReversePivot ? second + first : first + second;
+}
+
+std::string PivotString::reverse(std::string string)
+{
+    mCalls++;
+    std::string reversed;
+    while (reversed.length() < string.length())
+    {
+        unsigned int i = string.length() - reversed.length() - 1;
+        reversed.push_back(string[i]);
+    }
+    return reversed;
+}
 
 /*
  copied UDT 3:
@@ -202,8 +268,20 @@ int main()
     dog.travel(2);
     dog.stopRunning();
     dog.travel(1);
+    std::cout << std::endl;
 
-
+    PivotString simple {"simple"};
+    PivotString reversed { "reversed", true, true};
+    PivotString mangled {"mangled", false, true};
+    PivotString first {"first", true, false, 1};
+    PivotString last {"last", true, false, 4};
+    std::cout << "PivotString simple = " << simple.getFull() << std::endl;
+    std::cout << "PivotString reversed = " << reversed.getFull() << std::endl;
+    std::cout << "PivotString mangled = " << mangled.getFull() << std::endl;
+    std::cout << "PivotString first = " << first.getFull() << std::endl;
+    std::cout << "PivotString last = " << last.getFull() << std::endl;
+    std::cout << std::endl;
 
     std::cout << "good to go!" << std::endl;
+    std::cout << std::endl;
 }
