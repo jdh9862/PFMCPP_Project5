@@ -84,7 +84,7 @@ compiler arguments. You can resolve any [-Wpadded] warnings by adding
 class Animal
 {
 public:
-    Animal(std::string name, unsigned int numberOfLegs, bool canRun = false);
+    Animal(std::string name_, unsigned int numberOfLegs_, bool canRun_ = false);
 
     ~Animal();
 
@@ -94,10 +94,15 @@ public:
 
     void travel(int numberOfSteps);
 
+private:
+    std::string name;
+    unsigned int numberOfLegs, lastStep = 0, feetTraveled = 0;
+    bool canRun, isRunning = false;
+
     class Clock
     {
     public:
-        explicit Clock(bool is24Hour);
+        explicit Clock(bool is24Hour_);
 
         ~Clock();
 
@@ -111,127 +116,122 @@ public:
         wind(unsigned int hours, unsigned int minutes, unsigned int seconds);
 
     private:
-        bool mIs24Hour, mIsAM = true;
-        int mHour = 0, mMinute = 0, mSecond = 0;
+        bool is24Hour, isAM = true;
+        int hour = 0, minute = 0, second = 0;
     };
-
-private:
-    std::string mName;
-    unsigned int mNumberOfLegs, mLastStep = 0, mFeetTraveled = 0;
-    bool mCanRun, mIsRunning = false;
 };
 
-Animal::Animal(std::string name, unsigned int numberOfLegs, bool canRun)
-        : mName(std::move(name)), mNumberOfLegs(numberOfLegs)
+Animal::Animal(std::string name_, unsigned int numberOfLegs_, bool canRun_)
+        : name(std::move(name_)), numberOfLegs(numberOfLegs_)
 {
-    if (canRun && numberOfLegs < 2)
+    if (canRun_ && numberOfLegs_ < 2)
     {
-        std::cout << "Animals " << mName << " needs at least 2 legs to run"
+        std::cout << "Animals " << name << " needs at least 2 legs to run"
                   << std::endl;
-        mCanRun = false;
+        canRun = false;
     }
     else
     {
-        mCanRun = canRun;
+        canRun = canRun_;
     }
 }
 
 Animal::~Animal()
 {
-    std::cout << "Animal " << mName << " traveled " << mFeetTraveled << " feet"
+    std::cout << "Animal " << name << " traveled " << feetTraveled << " feet"
               << std::endl;
 }
 
 void Animal::startRunning()
 {
-    if (mCanRun)
+    if (canRun)
     {
-        mIsRunning = true;
+        isRunning = true;
     }
     else
     {
-        std::cout << "Animal " << mName << " cannot run" << std::endl;
+        std::cout << "Animal " << name << " cannot run" << std::endl;
     }
 }
 
 void Animal::stopRunning()
 {
-    mIsRunning = false;
+    isRunning = false;
 }
 
 void Animal::travel(int numberOfSteps)
 {
-    if (mNumberOfLegs == 0)
+    if (numberOfLegs == 0)
     {
-        std::cout << "Animal " << mName
+        std::cout << "Animal " << name
                   << " has no legs and rolls across the ground 1 foot"
                   << std::endl;
-        ++mFeetTraveled;
+        ++feetTraveled;
         return;
     }
-    unsigned int start = mFeetTraveled;
+    unsigned int start = feetTraveled;
     for (int i = 0; i < numberOfSteps; ++i)
     {
-        ++mLastStep;
-        if (mLastStep >= mNumberOfLegs)
+        ++lastStep;
+        if (lastStep >= numberOfLegs)
         {
-            mLastStep = 0;
-            mFeetTraveled += mIsRunning ? 2 : 1;
+            lastStep = 0;
+            feetTraveled += isRunning ? 2 : 1;
         }
     }
-    std::cout << "Animal " << mName << " traveled " << (mFeetTraveled - start)
+    std::cout << "Animal " << name << " traveled " << (feetTraveled - start)
               << " feet in " << numberOfSteps << " steps" << std::endl;
 }
 
-Animal::Clock::Clock(bool is24Hour) : mIs24Hour(is24Hour)
+Animal::Clock::Clock(bool is24Hour_) : is24Hour(is24Hour_)
 {
-    if (!is24Hour)
+    if (!is24Hour_)
     {
-        mIsAM = new bool(true);
-        mHour = 12;
+        isAM = new bool(true);
+        hour = 12;
     }
 }
 
 Animal::Clock::~Clock()
 {
     std::string suffix;
-    if (!mIs24Hour)
+    if (!is24Hour)
     {
-        suffix = mIsAM ? "AM" : "PM";
+        suffix = isAM ? "AM" : "PM";
     }
     std::string mPrefix;
-    if (mMinute < 10)
+    if (minute < 10)
     {
         mPrefix = "0";
     }
     std::string sPrefix;
-    if (mSecond < 10)
+    if (second < 10)
     {
         sPrefix = "0";
     }
-    std::cout << "The time is " << mHour << ":" << mPrefix << mMinute << ":"
-              << sPrefix << mSecond << suffix << std::endl;
+    std::cout << "The time is " << hour << ":" << mPrefix << minute << ":"
+              << sPrefix << second << suffix << std::endl;
 }
 
 void Animal::Clock::incrementHour()
 {
-    ++mHour;
-    if (mIs24Hour)
+    ++hour;
+    if (is24Hour)
     {
-        if (mHour == 24)
+        if (hour == 24)
         {
-            mHour = 0;
+            hour = 0;
         }
     }
     else
     {
-        switch (mHour)
+        switch (hour)
         {
             case 12:
-                mIsAM = !mIsAM;
+                isAM = !isAM;
                 break;
             case 13:
-                mHour = 1;
+                hour = 1;
                 break;
         }
     }
@@ -239,14 +239,14 @@ void Animal::Clock::incrementHour()
 
 void Animal::Clock::incrementMinute(bool silent)
 {
-    ++mMinute;
-    if (mMinute == 60)
+    ++minute;
+    if (minute == 60)
     {
-        mMinute = 0;
+        minute = 0;
         incrementHour();
         if (!silent)
         {
-            int num = mHour % 12;
+            int num = hour % 12;
             if (num == 0)
             {
                 num = 12;
@@ -261,14 +261,14 @@ void Animal::Clock::incrementMinute(bool silent)
 
 void Animal::Clock::incrementSecond(bool silent)
 {
-    ++mSecond;
+    ++second;
     if (!silent)
     {
-        std::cout << (mSecond % 2 ? "tick" : "tock") << std::endl;
+        std::cout << (second % 2 ? "tick" : "tock") << std::endl;
     }
-    if (mSecond == 60)
+    if (second == 60)
     {
-        mSecond = 0;
+        second = 0;
         incrementMinute(silent);
     }
 }
@@ -299,10 +299,10 @@ class PivotString
 {
 public:
     explicit PivotString(
-            const std::string &string,
-            bool reversePivot = false,
-            bool reverseString = false,
-            unsigned long pivotIndex = 0);
+            const std::string &string_,
+            bool reversePivot_ = false,
+            bool reverseString_ = false,
+            unsigned long pivotIndex_ = 0);
 
     ~PivotString();
 
@@ -310,68 +310,68 @@ public:
 
     std::string getFull();
 
-    std::string reverse(std::string string);
+    std::string reverse(std::string string_);
 
-    int mCalls = 0;
-    unsigned long mPivotIndex;
-    std::string mString;
-    bool mReversePivot, mReverseString;
+    int calls = 0;
+    unsigned long pivotIndex;
+    std::string string;
+    bool reversePivot, reverseString;
 };
 
 PivotString::PivotString(
-        const std::string &string,
-        bool reversePivot,
-        bool reverseString,
-        unsigned long pivotIndex)
-        : mString(string),
-          mReversePivot(reversePivot),
-          mReverseString(reverseString)
+        const std::string &string_,
+        bool reversePivot_,
+        bool reverseString_,
+        unsigned long pivotIndex_)
+        : string(string_),
+          reversePivot(reversePivot_),
+          reverseString(reverseString_)
 {
-    mPivotIndex = pivotIndex > string.length()
-                  ? string.length() / 2
-                  : pivotIndex;
+    pivotIndex = pivotIndex_ > string_.length()
+                  ? string_.length() / 2
+                  : pivotIndex_;
 }
 
 PivotString::~PivotString()
 {
-    std::cout << "PivotString " << getFull() << " was called " << mCalls
+    std::cout << "PivotString " << getFull() << " was called " << calls
               << " times" << std::endl;
 }
 
 std::string PivotString::getPart(bool first)
 {
-    ++mCalls;
+    ++calls;
     if (first)
     {
-        return mString.substr(0, mPivotIndex);
+        return string.substr(0, pivotIndex);
     }
     else
     {
-        return mString.substr(mPivotIndex, mString.length() - mPivotIndex);
+        return string.substr(pivotIndex, string.length() - pivotIndex);
     }
 }
 
 std::string PivotString::getFull()
 {
-    ++mCalls;
+    ++calls;
     std::string first = getPart();
     std::string second = getPart(false);
-    if (mReverseString)
+    if (reverseString)
     {
         first = reverse(first);
         second = reverse(second);
     }
-    return mReversePivot ? second + first : first + second;
+    return reversePivot ? second + first : first + second;
 }
 
-std::string PivotString::reverse(std::string string)
+std::string PivotString::reverse(std::string string_)
 {
-    ++mCalls;
+    ++calls;
     std::string reversed;
-    while (reversed.length() < string.length())
+    while (reversed.length() < string_.length())
     {
-        unsigned long i = string.length() - reversed.length() - 1;
-        reversed.push_back(string[i]);
+        unsigned long i = string_.length() - reversed.length() - 1;
+        reversed.push_back(string_[i]);
     }
     return reversed;
 }
@@ -505,7 +505,7 @@ FancyPrinter::FancyPrinter(const PivotString &pivot1, const PivotString &pivot2)
 FancyPrinter::~FancyPrinter()
 {
     std::cout << "FancyPrinter called it's PivotStrings "
-              << p1.mCalls + p2.mCalls << " times" << std::endl;
+              << p1.calls + p2.calls << " times" << std::endl;
 }
 
 void FancyPrinter::print() const
@@ -518,7 +518,7 @@ void FancyPrinter::print() const
 
 void FancyPrinter::getParts(PivotString p, std::string &s1, std::string &s2)
 {
-    if (p.mReversePivot)
+    if (p.reversePivot)
     {
         s1 = p.getPart(false);
         s2 = p.getPart();
@@ -528,7 +528,7 @@ void FancyPrinter::getParts(PivotString p, std::string &s1, std::string &s2)
         s1 = p.getPart();
         s2 = p.getPart(false);
     }
-    if (p.mReverseString)
+    if (p.reverseString)
     {
         s1 = p.reverse(s1);
         s2 = p.reverse(s2);
