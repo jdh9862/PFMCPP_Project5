@@ -94,11 +94,6 @@ public:
 
     void travel(int numberOfSteps);
 
-private:
-    std::string name;
-    unsigned int numberOfLegs, lastStep = 0, feetTraveled = 0;
-    bool canRun, isRunning = false;
-
     class Clock
     {
     public:
@@ -119,6 +114,11 @@ private:
         bool is24Hour, isAM = true;
         int hour = 0, minute = 0, second = 0;
     };
+
+private:
+    std::string name;
+    unsigned int numberOfLegs, lastStep = 0, feetTraveled = 0;
+    bool canRun, isRunning = false;
 };
 
 Animal::Animal(std::string name_, unsigned int numberOfLegs_, bool canRun_)
