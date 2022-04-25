@@ -307,6 +307,17 @@ void Animal::Clock::wind(
     }
 }
 
+struct ClockWrapper
+{
+    ClockWrapper(Animal::Clock *ptr) : clockPtr(ptr) {}
+    ~ClockWrapper()
+    {
+        delete clockPtr;
+    }
+
+    Animal::Clock* clockPtr;
+};
+
 /*
  copied UDT 2:
  */
@@ -667,16 +678,16 @@ int main()
     dog.animalPtr->travel(1);
     std::cout << std::endl;
 
-    Animal::Clock clock1{true};
-    clock1.wind(23, 59, 59);
-    clock1.incrementSecond();
-    clock1.incrementSecond();
+    ClockWrapper clock1{new Animal::Clock(true)};
+    clock1.clockPtr->wind(23, 59, 59);
+    clock1.clockPtr->incrementSecond();
+    clock1.clockPtr->incrementSecond();
     std::cout << std::endl;
 
-    Animal::Clock clock2{false};
-    clock2.wind(12, 59, 58);
-    clock2.incrementSecond();
-    clock2.incrementSecond();
+    ClockWrapper clock2{new Animal::Clock(false)};
+    clock2.clockPtr->wind(12, 59, 58);
+    clock2.clockPtr->incrementSecond();
+    clock2.clockPtr->incrementSecond();
     std::cout << std::endl;
 
     PivotString simple{"simple"};
