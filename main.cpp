@@ -188,6 +188,17 @@ void Animal::travel(int numberOfSteps)
               << " feet in " << numberOfSteps << " steps" << std::endl;
 }
 
+struct AnimalWrapper
+{
+    AnimalWrapper(Animal *ptr) : animalPtr(ptr) {}
+    ~AnimalWrapper()
+    {
+        delete animalPtr;
+    }
+
+    Animal* animalPtr;
+};
+
 Animal::Clock::Clock(bool is24Hour_) : is24Hour(is24Hour_)
 {
     if (!is24Hour_)
@@ -634,26 +645,26 @@ void DividingStruct::printDivision()
 
 int main()
 {
-    Animal pogoFrog{"Pogo Frog", 1, true};
-    pogoFrog.travel(2);
-    pogoFrog.startRunning();
-    pogoFrog.travel(2);
-    pogoFrog.stopRunning();
-    pogoFrog.travel(1);
+    AnimalWrapper pogoFrog{new Animal("Pogo Frog", 1, true)};
+    pogoFrog.animalPtr->travel(2);
+    pogoFrog.animalPtr->startRunning();
+    pogoFrog.animalPtr->travel(2);
+    pogoFrog.animalPtr->stopRunning();
+    pogoFrog.animalPtr->travel(1);
 
-    Animal fishOutOfWater{"Fish", 0};
-    fishOutOfWater.travel(2);
-    fishOutOfWater.startRunning();
-    fishOutOfWater.travel(2);
-    fishOutOfWater.stopRunning();
-    fishOutOfWater.travel(1);
+    AnimalWrapper fishOutOfWater{new Animal("Fish", 0)};
+    fishOutOfWater.animalPtr->travel(2);
+    fishOutOfWater.animalPtr->startRunning();
+    fishOutOfWater.animalPtr->travel(2);
+    fishOutOfWater.animalPtr->stopRunning();
+    fishOutOfWater.animalPtr->travel(1);
 
-    Animal dog{"Dog", 4, true};
-    dog.travel(2);
-    dog.startRunning();
-    dog.travel(2);
-    dog.stopRunning();
-    dog.travel(1);
+    AnimalWrapper dog{new Animal("Dog", 4, true)};
+    dog.animalPtr->travel(2);
+    dog.animalPtr->startRunning();
+    dog.animalPtr->travel(2);
+    dog.animalPtr->stopRunning();
+    dog.animalPtr->travel(1);
     std::cout << std::endl;
 
     Animal::Clock clock1{true};
