@@ -127,19 +127,19 @@ Animal::Animal(std::string name_, unsigned int numberOfLegs_, bool canRun_)
 {
     if (canRun_ && numberOfLegs_ < 2)
     {
-        std::cout << "Animals " << name << " needs at least 2 legs to run"
+        std::cout << "Animals " << this->name << " needs at least 2 legs to run"
                   << std::endl;
-        canRun = false;
+        this->canRun = false;
     }
     else
     {
-        canRun = canRun_;
+        this->canRun = canRun_;
     }
 }
 
 Animal::~Animal()
 {
-    std::cout << "Animal " << name << " traveled " << feetTraveled << " feet"
+    std::cout << "Animal " << this->name << " traveled " << this->feetTraveled << " feet"
               << std::endl;
 }
 
@@ -147,40 +147,40 @@ void Animal::startRunning()
 {
     if (canRun)
     {
-        isRunning = true;
+        this->isRunning = true;
     }
     else
     {
-        std::cout << "Animal " << name << " cannot run" << std::endl;
+        std::cout << "Animal " << this->name << " cannot run" << std::endl;
     }
 }
 
 void Animal::stopRunning()
 {
-    isRunning = false;
+    this->isRunning = false;
 }
 
 void Animal::travel(int numberOfSteps)
 {
-    if (numberOfLegs == 0)
+    if (this->numberOfLegs == 0)
     {
-        std::cout << "Animal " << name
+        std::cout << "Animal " << this->name
                   << " has no legs and rolls across the ground 1 foot"
                   << std::endl;
         ++feetTraveled;
         return;
     }
-    unsigned int start = feetTraveled;
+    unsigned int start = this->feetTraveled;
     for (int i = 0; i < numberOfSteps; ++i)
     {
-        ++lastStep;
-        if (lastStep >= numberOfLegs)
+        ++this->lastStep;
+        if (this->lastStep >= this->numberOfLegs)
         {
-            lastStep = 0;
-            feetTraveled += isRunning ? 2 : 1;
+            this->lastStep = 0;
+            this->feetTraveled += this->isRunning ? 2 : 1;
         }
     }
-    std::cout << "Animal " << name << " traveled " << (feetTraveled - start)
+    std::cout << "Animal " << this->name << " traveled " << (this->feetTraveled - start)
               << " feet in " << numberOfSteps << " steps" << std::endl;
 }
 
@@ -188,51 +188,50 @@ Animal::Clock::Clock(bool is24Hour_) : is24Hour(is24Hour_)
 {
     if (!is24Hour_)
     {
-        isAM = new bool(true);
-        hour = 12;
+        this->hour = 12;
     }
 }
 
 Animal::Clock::~Clock()
 {
     std::string suffix;
-    if (!is24Hour)
+    if (!this->is24Hour)
     {
-        suffix = isAM ? "AM" : "PM";
+        suffix = this->isAM ? "AM" : "PM";
     }
     std::string mPrefix;
-    if (minute < 10)
+    if (this->minute < 10)
     {
         mPrefix = "0";
     }
     std::string sPrefix;
-    if (second < 10)
+    if (this->second < 10)
     {
         sPrefix = "0";
     }
-    std::cout << "The time is " << hour << ":" << mPrefix << minute << ":"
-              << sPrefix << second << suffix << std::endl;
+    std::cout << "The time is " << this->hour << ":" << mPrefix << this->minute << ":"
+              << sPrefix << this->second << suffix << std::endl;
 }
 
 void Animal::Clock::incrementHour()
 {
-    ++hour;
-    if (is24Hour)
+    ++this->hour;
+    if (this->is24Hour)
     {
-        if (hour == 24)
+        if (this->hour == 24)
         {
-            hour = 0;
+            this->hour = 0;
         }
     }
     else
     {
-        switch (hour)
+        switch (this->hour)
         {
             case 12:
-                isAM = !isAM;
+                this->isAM = !this->isAM;
                 break;
             case 13:
-                hour = 1;
+                this->hour = 1;
                 break;
         }
     }
@@ -240,14 +239,14 @@ void Animal::Clock::incrementHour()
 
 void Animal::Clock::incrementMinute(bool silent)
 {
-    ++minute;
-    if (minute == 60)
+    ++this->minute;
+    if (this->minute == 60)
     {
-        minute = 0;
-        incrementHour();
+        this->minute = 0;
+        this->incrementHour();
         if (!silent)
         {
-            int num = hour % 12;
+            int num = this->hour % 12;
             if (num == 0)
             {
                 num = 12;
@@ -262,15 +261,15 @@ void Animal::Clock::incrementMinute(bool silent)
 
 void Animal::Clock::incrementSecond(bool silent)
 {
-    ++second;
+    ++this->second;
     if (!silent)
     {
-        std::cout << (second % 2 ? "tick" : "tock") << std::endl;
+        std::cout << (this->second % 2 ? "tick" : "tock") << std::endl;
     }
-    if (second == 60)
+    if (this->second == 60)
     {
-        second = 0;
-        incrementMinute(silent);
+        this->second = 0;
+        this->incrementMinute(silent);
     }
 }
 
@@ -281,15 +280,15 @@ void Animal::Clock::wind(
 {
     for (unsigned int s = 0; s < seconds; ++s)
     {
-        incrementSecond(true);
+        this->incrementSecond(true);
     }
     for (unsigned int m = 0; m < minutes; ++m)
     {
-        incrementMinute(true);
+        this->incrementMinute(true);
     }
     for (unsigned int h = 0; h < hours; ++h)
     {
-        incrementHour();
+        this->incrementHour();
     }
 }
 
@@ -313,6 +312,8 @@ public:
 
     std::string reverse(std::string string_);
 
+    void printFull();
+
     int calls = 0;
     unsigned long pivotIndex;
     std::string string;
@@ -328,46 +329,41 @@ PivotString::PivotString(
           reversePivot(reversePivot_),
           reverseString(reverseString_)
 {
-    pivotIndex = pivotIndex_ > string_.length()
+    this->pivotIndex = pivotIndex_ > string_.length()
                   ? string_.length() / 2
                   : pivotIndex_;
 }
 
 PivotString::~PivotString()
 {
-    std::cout << "PivotString " << getFull() << " was called " << calls
+    std::cout << "PivotString " << this->getFull() << " was called " << this->calls
               << " times" << std::endl;
 }
 
 std::string PivotString::getPart(bool first)
 {
-    ++calls;
-    if (first)
-    {
-        return string.substr(0, pivotIndex);
-    }
-    else FIXME: see message in Slack
-    {
-        return string.substr(pivotIndex, string.length() - pivotIndex);
-    }
+    ++this->calls;
+    return first
+        ? this->string.substr(0, this->pivotIndex)
+        : this->string.substr(this->pivotIndex, this->string.length() - this->pivotIndex);
 }
 
 std::string PivotString::getFull()
 {
-    ++calls;
-    std::string first = getPart();
-    std::string second = getPart(false);
-    if (reverseString)
+    ++this->calls;
+    std::string first = this->getPart();
+    std::string second = this->getPart(false);
+    if (this->reverseString)
     {
-        first = reverse(first);
-        second = reverse(second);
+        first = this->reverse(first);
+        second = this->reverse(second);
     }
-    return reversePivot ? second + first : first + second;
+    return this->reversePivot ? second + first : first + second;
 }
 
 std::string PivotString::reverse(std::string string_)
 {
-    ++calls;
+    ++this->calls;
     std::string reversed;
     while (reversed.length() < string_.length())
     {
@@ -375,6 +371,11 @@ std::string PivotString::reverse(std::string string_)
         reversed.push_back(string_[i]);
     }
     return reversed;
+}
+
+void PivotString::printFull()
+{
+    std::cout << "PivotString " << this->string << " = " << this->getFull() << std::endl;
 }
 
 /*
@@ -392,6 +393,8 @@ struct SummingStruct
 
     float sumFloats() const;
 
+    void printSum(bool onlyFloats);
+
     int integer = 0;
     double firstDouble, secondDouble;
     float firstFloat, secondFloat;
@@ -407,6 +410,8 @@ struct SummingStruct
         double multiplyAll() const;
 
         float multiplyFloats() const;
+
+        void printMultiply(bool onlyFloats);
 
         int integer = 0;
         double firstDouble, secondDouble;
@@ -429,21 +434,33 @@ SummingStruct::~SummingStruct()
 
 void SummingStruct::setInteger(int newValue)
 {
-    integer = 0;
-    while (integer < abs(newValue))
+    this->integer = 0;
+    while (this->integer < abs(newValue))
     {
-        ++integer;
+        ++this->integer;
     }
 }
 
 double SummingStruct::sumAll() const
 {
-    return double(sumFloats()) + firstDouble + secondDouble + integer;
+    return double(this->sumFloats()) + this->firstDouble + this->secondDouble + this->integer;
 }
 
 float SummingStruct::sumFloats() const
 {
-    return firstFloat + secondFloat;
+    return this->firstFloat + this->secondFloat;
+}
+
+void SummingStruct::printSum(bool onlyFloats)
+{
+    if (onlyFloats)
+    {
+        std::cout << "sumFloats = " << this->sumFloats() << std::endl;
+    }
+    else
+    {
+        std::cout << "sumAll = " << this->sumAll() << std::endl;
+    }
 }
 
 SummingStruct::MultiplierStruct::MultiplierStruct(
@@ -465,18 +482,31 @@ void SummingStruct::MultiplierStruct::incrementInteger(unsigned int added)
     while (added > 0)
     {
         --added;
-        ++integer;
+        ++this->integer;
     }
 }
 
 double SummingStruct::MultiplierStruct::multiplyAll() const
 {
-    return double(multiplyFloats()) * firstDouble * secondDouble * integer;
+    return double(multiplyFloats()) * this->firstDouble * this->secondDouble * this->integer;
 }
 
 float SummingStruct::MultiplierStruct::multiplyFloats() const
 {
-    return firstFloat * secondFloat;
+    return this->firstFloat * this->secondFloat;
+}
+
+void SummingStruct::MultiplierStruct::printMultiply(bool onlyFloats)
+{
+    if (onlyFloats)
+    {
+        std::cout << "multiplyFloats = " << this->multiplyFloats()
+                  << std::endl;
+    }
+    else
+    {
+        std::cout << "multiplyAll = " << this->multiplyAll() << std::endl;
+    }
 }
 
 /*
@@ -506,14 +536,14 @@ FancyPrinter::FancyPrinter(const PivotString &pivot1, const PivotString &pivot2)
 FancyPrinter::~FancyPrinter()
 {
     std::cout << "FancyPrinter called it's PivotStrings "
-              << p1.calls + p2.calls << " times" << std::endl;
+              << this->p1.calls + this->p2.calls << " times" << std::endl;
 }
 
 void FancyPrinter::print() const
 {
     std::string s1, s2, s3, s4;
-    getParts(p1, s1, s3);
-    getParts(p2, s2, s4);
+    getParts(this->p1, s1, s3);
+    getParts(this->p2, s2, s4);
     std::cout << s1 << s2 << s3 << s4 << std::endl;
 }
 
@@ -550,6 +580,8 @@ struct DividingStruct
 
     void modifyIntegers(unsigned int i);
 
+    void printDivision();
+
     SummingStruct summing;
     SummingStruct::MultiplierStruct multiplier;
 };
@@ -566,13 +598,18 @@ DividingStruct::~DividingStruct()
 
 double DividingStruct::divide() const
 {
-    return multiplier.multiplyAll() / summing.sumAll();
+    return this->multiplier.multiplyAll() / this->summing.sumAll();
 }
 
 void DividingStruct::modifyIntegers(unsigned int i)
 {
-    summing.setInteger(int(i));
-    multiplier.incrementInteger(i);
+    this->summing.setInteger(int(i));
+    this->multiplier.incrementInteger(i);
+}
+
+void DividingStruct::printDivision()
+{
+    std::cout << "divide " << (this->multiplier.integer ? "after" : "before") << " = " << this->divide() << std::endl;
 }
 
 /*
@@ -633,23 +670,32 @@ int main()
     PivotString first{"first", true, false, 1};
     PivotString last{"last", true, false, 4};
     std::cout << "PivotString simple = " << simple.getFull() << std::endl;
+    simple.printFull();
     std::cout << "PivotString reversed = " << reversed.getFull() << std::endl;
+    reversed.printFull();
     std::cout << "PivotString mangled = " << mangled.getFull() << std::endl;
+    mangled.printFull();
     std::cout << "PivotString first = " << first.getFull() << std::endl;
+    first.printFull();
     std::cout << "PivotString last = " << last.getFull() << std::endl;
+    last.printFull();
     std::cout << std::endl;
 
     SummingStruct summing{1.1f, 2.0f};
     summing.setInteger(-2);
     std::cout << "sumFloats = " << summing.sumFloats() << std::endl;
+    summing.printSum(true);
     std::cout << "sumAll = " << summing.sumAll() << std::endl;
+    summing.printSum(false);
     std::cout << std::endl;
 
     SummingStruct::MultiplierStruct multiplier{summing};
     multiplier.incrementInteger(3);
     std::cout << "multiplyFloats = " << multiplier.multiplyFloats()
               << std::endl;
+    multiplier.printMultiply(true);
     std::cout << "multiplyAll = " << multiplier.multiplyAll() << std::endl;
+    multiplier.printMultiply(false);
     std::cout << std::endl;
 
     FancyPrinter p{simple, mangled};
@@ -660,8 +706,10 @@ int main()
     // Result will be zero because the multiplier's integer has not been
     // incremented
     std::cout << "divide before = " << divider.divide() << std::endl;
+    divider.printDivision();
     divider.modifyIntegers(1);
     std::cout << "divide after = " << divider.divide() << std::endl;
+    divider.printDivision();
     std::cout << std::endl;
 
     std::cout << "good to go!" << std::endl;
