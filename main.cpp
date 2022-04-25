@@ -404,6 +404,17 @@ void PivotString::printFull()
     std::cout << "PivotString " << this->string << " = " << this->getFull() << std::endl;
 }
 
+struct PivotStringWrapper
+{
+    PivotStringWrapper(PivotString *ptr) : pivotStringPtr(ptr) {}
+    ~PivotStringWrapper()
+    {
+        delete pivotStringPtr;
+    }
+
+    PivotString* pivotStringPtr;
+};
+
 /*
  copied UDT 3:
  */
@@ -690,21 +701,21 @@ int main()
     clock2.clockPtr->incrementSecond();
     std::cout << std::endl;
 
-    PivotString simple{"simple"};
-    PivotString reversed{"reversed", true, true};
-    PivotString mangled{"mangled", false, true, 100};
-    PivotString first{"first", true, false, 1};
-    PivotString last{"last", true, false, 4};
-    std::cout << "PivotString simple = " << simple.getFull() << std::endl;
-    simple.printFull();
-    std::cout << "PivotString reversed = " << reversed.getFull() << std::endl;
-    reversed.printFull();
-    std::cout << "PivotString mangled = " << mangled.getFull() << std::endl;
-    mangled.printFull();
-    std::cout << "PivotString first = " << first.getFull() << std::endl;
-    first.printFull();
-    std::cout << "PivotString last = " << last.getFull() << std::endl;
-    last.printFull();
+    PivotStringWrapper simple{new PivotString("simple")};
+    PivotStringWrapper reversed{new PivotString("reversed", true, true)};
+    PivotStringWrapper mangled{new PivotString("mangled", false, true, 100)};
+    PivotStringWrapper first{new PivotString("first", true, false, 1)};
+    PivotStringWrapper last{new PivotString("last", true, false, 4)};
+    std::cout << "PivotString simple = " << simple.pivotStringPtr->getFull() << std::endl;
+    simple.pivotStringPtr->printFull();
+    std::cout << "PivotString reversed = " << reversed.pivotStringPtr->getFull() << std::endl;
+    reversed.pivotStringPtr->printFull();
+    std::cout << "PivotString mangled = " << mangled.pivotStringPtr->getFull() << std::endl;
+    mangled.pivotStringPtr->printFull();
+    std::cout << "PivotString first = " << first.pivotStringPtr->getFull() << std::endl;
+    first.pivotStringPtr->printFull();
+    std::cout << "PivotString last = " << last.pivotStringPtr->getFull() << std::endl;
+    last.pivotStringPtr->printFull();
     std::cout << std::endl;
 
     SummingStruct summing{1.1f, 2.0f};
@@ -724,7 +735,7 @@ int main()
     multiplier.printMultiply(false);
     std::cout << std::endl;
 
-    FancyPrinter p{simple, mangled};
+    FancyPrinter p{*simple.pivotStringPtr, *mangled.pivotStringPtr};
     p.print();
     std::cout << std::endl;
 
