@@ -188,7 +188,6 @@ Animal::Clock::Clock(bool is24Hour_) : is24Hour(is24Hour_)
 {
     if (!is24Hour_)
     {
-        this->isAM = new bool(true);
         this->hour = 12;
     }
 }
