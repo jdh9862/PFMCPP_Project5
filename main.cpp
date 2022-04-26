@@ -82,6 +82,7 @@ void Axe::aConstMemberFunction() const { }
 
 #include <iostream>
 #include <utility>
+#include "LeakedObjectDetector.h"
 
 /*
  copied UDT 1:
@@ -118,12 +119,15 @@ public:
     private:
         bool is24Hour, isAM = true;
         int hour = 0, minute = 0, second = 0;
+
+        JUCE_LEAK_DETECTOR(Animal::Clock)
     };
 
 private:
     std::string name;
     unsigned int numberOfLegs, lastStep = 0, feetTraveled = 0;
     bool canRun, isRunning = false;
+    JUCE_LEAK_DETECTOR(Animal)
 };
 
 Animal::Animal(std::string name_, unsigned int numberOfLegs_, bool canRun_)
@@ -187,6 +191,17 @@ void Animal::travel(int numberOfSteps)
     std::cout << "Animal " << this->name << " traveled " << (this->feetTraveled - start)
               << " feet in " << numberOfSteps << " steps" << std::endl;
 }
+
+struct AnimalWrapper
+{
+    AnimalWrapper(Animal* ptr) : animalPtr(ptr) {}
+    ~AnimalWrapper()
+    {
+        delete animalPtr;
+    }
+
+    Animal* animalPtr;
+};
 
 Animal::Clock::Clock(bool is24Hour_) : is24Hour(is24Hour_)
 {
@@ -296,6 +311,17 @@ void Animal::Clock::wind(
     }
 }
 
+struct ClockWrapper
+{
+    ClockWrapper(Animal::Clock* ptr) : clockPtr(ptr) {}
+    ~ClockWrapper()
+    {
+        delete clockPtr;
+    }
+
+    Animal::Clock* clockPtr;
+};
+
 /*
  copied UDT 2:
  */
@@ -322,6 +348,8 @@ public:
     unsigned long pivotIndex;
     std::string string;
     bool reversePivot, reverseString;
+
+    JUCE_LEAK_DETECTOR(PivotString)
 };
 
 PivotString::PivotString(
@@ -382,6 +410,17 @@ void PivotString::printFull()
     std::cout << "PivotString " << this->string << " = " << this->getFull() << std::endl;
 }
 
+struct PivotStringWrapper
+{
+    PivotStringWrapper(PivotString* ptr) : pivotStringPtr(ptr) {}
+    ~PivotStringWrapper()
+    {
+        delete pivotStringPtr;
+    }
+
+    PivotString* pivotStringPtr;
+};
+
 /*
  copied UDT 3:
  */
@@ -420,7 +459,11 @@ struct SummingStruct
         int integer = 0;
         double firstDouble, secondDouble;
         float firstFloat, secondFloat;
+
+        JUCE_LEAK_DETECTOR(SummingStruct::MultiplierStruct)
     };
+
+    JUCE_LEAK_DETECTOR(SummingStruct)
 };
 
 SummingStruct::SummingStruct(float first, float second)
@@ -466,6 +509,17 @@ void SummingStruct::printSum(bool onlyFloats)
         std::cout << "sumAll = " << this->sumAll() << std::endl;
     }
 }
+
+struct SummingStructWrapper
+{
+    SummingStructWrapper(SummingStruct* ptr) : summingStructPtr(ptr) {}
+    ~SummingStructWrapper()
+    {
+        delete summingStructPtr;
+    }
+
+    SummingStruct* summingStructPtr;
+};
 
 SummingStruct::MultiplierStruct::MultiplierStruct(
         const SummingStruct &summingStruct)
@@ -513,6 +567,17 @@ void SummingStruct::MultiplierStruct::printMultiply(bool onlyFloats)
     }
 }
 
+struct MultiplierStructWrapper
+{
+    MultiplierStructWrapper(SummingStruct::MultiplierStruct* ptr) : multiplierStructPtr(ptr) {}
+    ~MultiplierStructWrapper()
+    {
+        delete multiplierStructPtr;
+    }
+
+    SummingStruct::MultiplierStruct* multiplierStructPtr;
+};
+
 /*
  new UDT 4:
  with 2 member functions
@@ -530,6 +595,8 @@ public:
 
 private:
     PivotString p1, p2;
+
+    JUCE_LEAK_DETECTOR(FancyPrinter)
 };
 
 FancyPrinter::FancyPrinter(const PivotString &pivot1, const PivotString &pivot2)
@@ -570,6 +637,17 @@ void FancyPrinter::getParts(PivotString p, std::string &s1, std::string &s2)
     }
 }
 
+struct FancyPrinterWrapper
+{
+    FancyPrinterWrapper(FancyPrinter* ptr) : fancyPrinterPtr(ptr) {}
+    ~FancyPrinterWrapper()
+    {
+        delete fancyPrinterPtr;
+    }
+
+    FancyPrinter* fancyPrinterPtr;
+};
+
 /*
  new UDT 5:
  with 2 member functions
@@ -588,6 +666,8 @@ struct DividingStruct
 
     SummingStruct summing;
     SummingStruct::MultiplierStruct multiplier;
+
+    JUCE_LEAK_DETECTOR(DividingStruct)
 };
 
 DividingStruct::DividingStruct(const SummingStruct &s)
@@ -616,6 +696,17 @@ void DividingStruct::printDivision()
     std::cout << "divide " << (this->multiplier.integer ? "after" : "before") << " = " << this->divide() << std::endl;
 }
 
+struct DividingStructWrapper
+{
+    DividingStructWrapper(DividingStruct* ptr) : dividingStructPtr(ptr) {}
+    ~DividingStructWrapper()
+    {
+        delete dividingStructPtr;
+    }
+
+    DividingStruct* dividingStructPtr;
+};
+
 /*
  MAKE SURE YOU ARE NOT ON THE MASTER BRANCH
 
@@ -634,86 +725,86 @@ void DividingStruct::printDivision()
 
 int main()
 {
-    Animal pogoFrog{"Pogo Frog", 1, true};
-    pogoFrog.travel(2);
-    pogoFrog.startRunning();
-    pogoFrog.travel(2);
-    pogoFrog.stopRunning();
-    pogoFrog.travel(1);
+    AnimalWrapper pogoFrog{new Animal("Pogo Frog", 1, true)};
+    pogoFrog.animalPtr->travel(2);
+    pogoFrog.animalPtr->startRunning();
+    pogoFrog.animalPtr->travel(2);
+    pogoFrog.animalPtr->stopRunning();
+    pogoFrog.animalPtr->travel(1);
 
-    Animal fishOutOfWater{"Fish", 0};
-    fishOutOfWater.travel(2);
-    fishOutOfWater.startRunning();
-    fishOutOfWater.travel(2);
-    fishOutOfWater.stopRunning();
-    fishOutOfWater.travel(1);
+    AnimalWrapper fishOutOfWater{new Animal("Fish", 0)};
+    fishOutOfWater.animalPtr->travel(2);
+    fishOutOfWater.animalPtr->startRunning();
+    fishOutOfWater.animalPtr->travel(2);
+    fishOutOfWater.animalPtr->stopRunning();
+    fishOutOfWater.animalPtr->travel(1);
 
-    Animal dog{"Dog", 4, true};
-    dog.travel(2);
-    dog.startRunning();
-    dog.travel(2);
-    dog.stopRunning();
-    dog.travel(1);
+    AnimalWrapper dog{new Animal("Dog", 4, true)};
+    dog.animalPtr->travel(2);
+    dog.animalPtr->startRunning();
+    dog.animalPtr->travel(2);
+    dog.animalPtr->stopRunning();
+    dog.animalPtr->travel(1);
     std::cout << std::endl;
 
-    Animal::Clock clock1{true};
-    clock1.wind(23, 59, 59);
-    clock1.incrementSecond();
-    clock1.incrementSecond();
+    ClockWrapper clock1{new Animal::Clock(true)};
+    clock1.clockPtr->wind(23, 59, 59);
+    clock1.clockPtr->incrementSecond();
+    clock1.clockPtr->incrementSecond();
     std::cout << std::endl;
 
-    Animal::Clock clock2{false};
-    clock2.wind(12, 59, 58);
-    clock2.incrementSecond();
-    clock2.incrementSecond();
+    ClockWrapper clock2{new Animal::Clock(false)};
+    clock2.clockPtr->wind(12, 59, 58);
+    clock2.clockPtr->incrementSecond();
+    clock2.clockPtr->incrementSecond();
     std::cout << std::endl;
 
-    PivotString simple{"simple"};
-    PivotString reversed{"reversed", true, true};
-    PivotString mangled{"mangled", false, true, 100};
-    PivotString first{"first", true, false, 1};
-    PivotString last{"last", true, false, 4};
-    std::cout << "PivotString simple = " << simple.getFull() << std::endl;
-    simple.printFull();
-    std::cout << "PivotString reversed = " << reversed.getFull() << std::endl;
-    reversed.printFull();
-    std::cout << "PivotString mangled = " << mangled.getFull() << std::endl;
-    mangled.printFull();
-    std::cout << "PivotString first = " << first.getFull() << std::endl;
-    first.printFull();
-    std::cout << "PivotString last = " << last.getFull() << std::endl;
-    last.printFull();
+    PivotStringWrapper simple{new PivotString("simple")};
+    PivotStringWrapper reversed{new PivotString("reversed", true, true)};
+    PivotStringWrapper mangled{new PivotString("mangled", false, true, 100)};
+    PivotStringWrapper first{new PivotString("first", true, false, 1)};
+    PivotStringWrapper last{new PivotString("last", true, false, 4)};
+    std::cout << "PivotString simple = " << simple.pivotStringPtr->getFull() << std::endl;
+    simple.pivotStringPtr->printFull();
+    std::cout << "PivotString reversed = " << reversed.pivotStringPtr->getFull() << std::endl;
+    reversed.pivotStringPtr->printFull();
+    std::cout << "PivotString mangled = " << mangled.pivotStringPtr->getFull() << std::endl;
+    mangled.pivotStringPtr->printFull();
+    std::cout << "PivotString first = " << first.pivotStringPtr->getFull() << std::endl;
+    first.pivotStringPtr->printFull();
+    std::cout << "PivotString last = " << last.pivotStringPtr->getFull() << std::endl;
+    last.pivotStringPtr->printFull();
     std::cout << std::endl;
 
-    SummingStruct summing{1.1f, 2.0f};
-    summing.setInteger(-2);
-    std::cout << "sumFloats = " << summing.sumFloats() << std::endl;
-    summing.printSum(true);
-    std::cout << "sumAll = " << summing.sumAll() << std::endl;
-    summing.printSum(false);
+    SummingStructWrapper summing{new SummingStruct(1.1f, 2.0f)};
+    summing.summingStructPtr->setInteger(-2);
+    std::cout << "sumFloats = " << summing.summingStructPtr->sumFloats() << std::endl;
+    summing.summingStructPtr->printSum(true);
+    std::cout << "sumAll = " << summing.summingStructPtr->sumAll() << std::endl;
+    summing.summingStructPtr->printSum(false);
     std::cout << std::endl;
 
-    SummingStruct::MultiplierStruct multiplier{summing};
-    multiplier.incrementInteger(3);
-    std::cout << "multiplyFloats = " << multiplier.multiplyFloats()
+    MultiplierStructWrapper multiplier{new SummingStruct::MultiplierStruct(*summing.summingStructPtr)};
+    multiplier.multiplierStructPtr->incrementInteger(3);
+    std::cout << "multiplyFloats = " << multiplier.multiplierStructPtr->multiplyFloats()
               << std::endl;
-    multiplier.printMultiply(true);
-    std::cout << "multiplyAll = " << multiplier.multiplyAll() << std::endl;
-    multiplier.printMultiply(false);
+    multiplier.multiplierStructPtr->printMultiply(true);
+    std::cout << "multiplyAll = " << multiplier.multiplierStructPtr->multiplyAll() << std::endl;
+    multiplier.multiplierStructPtr->printMultiply(false);
     std::cout << std::endl;
 
-    FancyPrinter p{simple, mangled};
-    p.print();
+    FancyPrinterWrapper p{new FancyPrinter(*simple.pivotStringPtr, *mangled.pivotStringPtr)};
+    p.fancyPrinterPtr->print();
     std::cout << std::endl;
 
-    DividingStruct divider{summing};
+    DividingStructWrapper divider{new DividingStruct(*summing.summingStructPtr)};
     // Result will be zero because the multiplier's integer has not been
     // incremented
-    std::cout << "divide before = " << divider.divide() << std::endl;
-    divider.printDivision();
-    divider.modifyIntegers(1);
-    std::cout << "divide after = " << divider.divide() << std::endl;
-    divider.printDivision();
+    std::cout << "divide before = " << divider.dividingStructPtr->divide() << std::endl;
+    divider.dividingStructPtr->printDivision();
+    divider.dividingStructPtr->modifyIntegers(1);
+    std::cout << "divide after = " << divider.dividingStructPtr->divide() << std::endl;
+    divider.dividingStructPtr->printDivision();
     std::cout << std::endl;
 
     std::cout << "good to go!" << std::endl;
