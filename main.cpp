@@ -194,7 +194,7 @@ void Animal::travel(int numberOfSteps)
 
 struct AnimalWrapper
 {
-    AnimalWrapper(Animal *ptr) : animalPtr(ptr) {}
+    AnimalWrapper(Animal* ptr) : animalPtr(ptr) {}
     ~AnimalWrapper()
     {
         delete animalPtr;
@@ -313,7 +313,7 @@ void Animal::Clock::wind(
 
 struct ClockWrapper
 {
-    ClockWrapper(Animal::Clock *ptr) : clockPtr(ptr) {}
+    ClockWrapper(Animal::Clock* ptr) : clockPtr(ptr) {}
     ~ClockWrapper()
     {
         delete clockPtr;
@@ -412,7 +412,7 @@ void PivotString::printFull()
 
 struct PivotStringWrapper
 {
-    PivotStringWrapper(PivotString *ptr) : pivotStringPtr(ptr) {}
+    PivotStringWrapper(PivotString* ptr) : pivotStringPtr(ptr) {}
     ~PivotStringWrapper()
     {
         delete pivotStringPtr;
@@ -512,7 +512,7 @@ void SummingStruct::printSum(bool onlyFloats)
 
 struct SummingStructWrapper
 {
-    SummingStructWrapper(SummingStruct *ptr) : summingStructPtr(ptr) {}
+    SummingStructWrapper(SummingStruct* ptr) : summingStructPtr(ptr) {}
     ~SummingStructWrapper()
     {
         delete summingStructPtr;
@@ -569,7 +569,7 @@ void SummingStruct::MultiplierStruct::printMultiply(bool onlyFloats)
 
 struct MultiplierStructWrapper
 {
-    MultiplierStructWrapper(SummingStruct::MultiplierStruct *ptr) : multiplierStructPtr(ptr) {}
+    MultiplierStructWrapper(SummingStruct::MultiplierStruct* ptr) : multiplierStructPtr(ptr) {}
     ~MultiplierStructWrapper()
     {
         delete multiplierStructPtr;
@@ -639,7 +639,7 @@ void FancyPrinter::getParts(PivotString p, std::string &s1, std::string &s2)
 
 struct FancyPrinterWrapper
 {
-    FancyPrinterWrapper(FancyPrinter *ptr) : fancyPrinterPtr(ptr) {}
+    FancyPrinterWrapper(FancyPrinter* ptr) : fancyPrinterPtr(ptr) {}
     ~FancyPrinterWrapper()
     {
         delete fancyPrinterPtr;
@@ -698,7 +698,7 @@ void DividingStruct::printDivision()
 
 struct DividingStructWrapper
 {
-    DividingStructWrapper(DividingStruct *ptr) : dividingStructPtr(ptr) {}
+    DividingStructWrapper(DividingStruct* ptr) : dividingStructPtr(ptr) {}
     ~DividingStructWrapper()
     {
         delete dividingStructPtr;
