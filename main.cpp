@@ -625,6 +625,17 @@ void FancyPrinter::getParts(PivotString p, std::string &s1, std::string &s2)
     }
 }
 
+struct FancyPrinterWrapper
+{
+    FancyPrinterWrapper(FancyPrinter *ptr) : fancyPrinterPtr(ptr) {}
+    ~FancyPrinterWrapper()
+    {
+        delete fancyPrinterPtr;
+    }
+
+    FancyPrinter* fancyPrinterPtr;
+};
+
 /*
  new UDT 5:
  with 2 member functions
@@ -757,8 +768,8 @@ int main()
     multiplier.multiplierStructPtr->printMultiply(false);
     std::cout << std::endl;
 
-    FancyPrinter p{*simple.pivotStringPtr, *mangled.pivotStringPtr};
-    p.print();
+    FancyPrinterWrapper p{new FancyPrinter(*simple.pivotStringPtr, *mangled.pivotStringPtr)};
+    p.fancyPrinterPtr->print();
     std::cout << std::endl;
 
     DividingStruct divider{*summing.summingStructPtr};
