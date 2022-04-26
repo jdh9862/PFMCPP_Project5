@@ -682,6 +682,17 @@ void DividingStruct::printDivision()
     std::cout << "divide " << (this->multiplier.integer ? "after" : "before") << " = " << this->divide() << std::endl;
 }
 
+struct DividingStructWrapper
+{
+    DividingStructWrapper(DividingStruct *ptr) : dividingStructPtr(ptr) {}
+    ~DividingStructWrapper()
+    {
+        delete dividingStructPtr;
+    }
+
+    DividingStruct* dividingStructPtr;
+};
+
 /*
  MAKE SURE YOU ARE NOT ON THE MASTER BRANCH
 
@@ -772,14 +783,14 @@ int main()
     p.fancyPrinterPtr->print();
     std::cout << std::endl;
 
-    DividingStruct divider{*summing.summingStructPtr};
+    DividingStructWrapper divider{new DividingStruct(*summing.summingStructPtr)};
     // Result will be zero because the multiplier's integer has not been
     // incremented
-    std::cout << "divide before = " << divider.divide() << std::endl;
-    divider.printDivision();
-    divider.modifyIntegers(1);
-    std::cout << "divide after = " << divider.divide() << std::endl;
-    divider.printDivision();
+    std::cout << "divide before = " << divider.dividingStructPtr->divide() << std::endl;
+    divider.dividingStructPtr->printDivision();
+    divider.dividingStructPtr->modifyIntegers(1);
+    std::cout << "divide after = " << divider.dividingStructPtr->divide() << std::endl;
+    divider.dividingStructPtr->printDivision();
     std::cout << std::endl;
 
     std::cout << "good to go!" << std::endl;
