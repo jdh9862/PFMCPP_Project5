@@ -500,6 +500,17 @@ void SummingStruct::printSum(bool onlyFloats)
     }
 }
 
+struct SummingStructWrapper
+{
+    SummingStructWrapper(SummingStruct *ptr) : summingStructPtr(ptr) {}
+    ~SummingStructWrapper()
+    {
+        delete summingStructPtr;
+    }
+
+    SummingStruct* summingStructPtr;
+};
+
 SummingStruct::MultiplierStruct::MultiplierStruct(
         const SummingStruct &summingStruct)
         : firstDouble(summingStruct.firstDouble),
@@ -718,15 +729,15 @@ int main()
     last.pivotStringPtr->printFull();
     std::cout << std::endl;
 
-    SummingStruct summing{1.1f, 2.0f};
-    summing.setInteger(-2);
-    std::cout << "sumFloats = " << summing.sumFloats() << std::endl;
-    summing.printSum(true);
-    std::cout << "sumAll = " << summing.sumAll() << std::endl;
-    summing.printSum(false);
+    SummingStructWrapper summing{new SummingStruct(1.1f, 2.0f)};
+    summing.summingStructPtr->setInteger(-2);
+    std::cout << "sumFloats = " << summing.summingStructPtr->sumFloats() << std::endl;
+    summing.summingStructPtr->printSum(true);
+    std::cout << "sumAll = " << summing.summingStructPtr->sumAll() << std::endl;
+    summing.summingStructPtr->printSum(false);
     std::cout << std::endl;
 
-    SummingStruct::MultiplierStruct multiplier{summing};
+    SummingStruct::MultiplierStruct multiplier{*summing.summingStructPtr};
     multiplier.incrementInteger(3);
     std::cout << "multiplyFloats = " << multiplier.multiplyFloats()
               << std::endl;
@@ -739,7 +750,7 @@ int main()
     p.print();
     std::cout << std::endl;
 
-    DividingStruct divider{summing};
+    DividingStruct divider{*summing.summingStructPtr};
     // Result will be zero because the multiplier's integer has not been
     // incremented
     std::cout << "divide before = " << divider.divide() << std::endl;
