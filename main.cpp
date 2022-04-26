@@ -82,6 +82,7 @@ void Axe::aConstMemberFunction() const { }
 
 #include <iostream>
 #include <utility>
+#include "LeakedObjectDetector.h"
 
 /*
  copied UDT 1:
@@ -118,12 +119,15 @@ public:
     private:
         bool is24Hour, isAM = true;
         int hour = 0, minute = 0, second = 0;
+
+        JUCE_LEAK_DETECTOR(Animal::Clock)
     };
 
 private:
     std::string name;
     unsigned int numberOfLegs, lastStep = 0, feetTraveled = 0;
     bool canRun, isRunning = false;
+    JUCE_LEAK_DETECTOR(Animal)
 };
 
 Animal::Animal(std::string name_, unsigned int numberOfLegs_, bool canRun_)
@@ -344,6 +348,8 @@ public:
     unsigned long pivotIndex;
     std::string string;
     bool reversePivot, reverseString;
+
+    JUCE_LEAK_DETECTOR(PivotString)
 };
 
 PivotString::PivotString(
@@ -453,7 +459,11 @@ struct SummingStruct
         int integer = 0;
         double firstDouble, secondDouble;
         float firstFloat, secondFloat;
+
+        JUCE_LEAK_DETECTOR(SummingStruct::MultiplierStruct)
     };
+
+    JUCE_LEAK_DETECTOR(SummingStruct)
 };
 
 SummingStruct::SummingStruct(float first, float second)
@@ -585,6 +595,8 @@ public:
 
 private:
     PivotString p1, p2;
+
+    JUCE_LEAK_DETECTOR(FancyPrinter)
 };
 
 FancyPrinter::FancyPrinter(const PivotString &pivot1, const PivotString &pivot2)
@@ -654,6 +666,8 @@ struct DividingStruct
 
     SummingStruct summing;
     SummingStruct::MultiplierStruct multiplier;
+
+    JUCE_LEAK_DETECTOR(DividingStruct)
 };
 
 DividingStruct::DividingStruct(const SummingStruct &s)
