@@ -557,6 +557,17 @@ void SummingStruct::MultiplierStruct::printMultiply(bool onlyFloats)
     }
 }
 
+struct MultiplierStructWrapper
+{
+    MultiplierStructWrapper(SummingStruct::MultiplierStruct *ptr) : multiplierStructPtr(ptr) {}
+    ~MultiplierStructWrapper()
+    {
+        delete multiplierStructPtr;
+    }
+
+    SummingStruct::MultiplierStruct* multiplierStructPtr;
+};
+
 /*
  new UDT 4:
  with 2 member functions
@@ -737,13 +748,13 @@ int main()
     summing.summingStructPtr->printSum(false);
     std::cout << std::endl;
 
-    SummingStruct::MultiplierStruct multiplier{*summing.summingStructPtr};
-    multiplier.incrementInteger(3);
-    std::cout << "multiplyFloats = " << multiplier.multiplyFloats()
+    MultiplierStructWrapper multiplier{new SummingStruct::MultiplierStruct(*summing.summingStructPtr)};
+    multiplier.multiplierStructPtr->incrementInteger(3);
+    std::cout << "multiplyFloats = " << multiplier.multiplierStructPtr->multiplyFloats()
               << std::endl;
-    multiplier.printMultiply(true);
-    std::cout << "multiplyAll = " << multiplier.multiplyAll() << std::endl;
-    multiplier.printMultiply(false);
+    multiplier.multiplierStructPtr->printMultiply(true);
+    std::cout << "multiplyAll = " << multiplier.multiplierStructPtr->multiplyAll() << std::endl;
+    multiplier.multiplierStructPtr->printMultiply(false);
     std::cout << std::endl;
 
     FancyPrinter p{*simple.pivotStringPtr, *mangled.pivotStringPtr};
