@@ -13,7 +13,7 @@ struct DividingStruct
 
     void modifyIntegers(unsigned int i);
 
-    void printDivision();
+    void printDivision() const;
 
     SummingStruct summing;
     SummingStruct::MultiplierStruct multiplier;

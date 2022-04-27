@@ -78,6 +78,9 @@ void Axe::aConstMemberFunction() const { }
  */
 
 #include "Wrapper.h"
+#include "PivotString.h"
+#include "FancyPrinter.h"
+#include "DividingStruct.h"
 
 int main()
 {

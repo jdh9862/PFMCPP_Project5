@@ -1,7 +1,6 @@
 #include "DividingStruct.h"
 
-DividingStruct::DividingStruct(const SummingStruct& s) :
-summing(s), multiplier(s)
+DividingStruct::DividingStruct(const SummingStruct& s) : summing(s), multiplier(s)
 {
 }
 
@@ -21,7 +20,7 @@ void DividingStruct::modifyIntegers(unsigned int i)
     multiplier.incrementInteger(i);
 }
 
-void DividingStruct::printDivision() // FIXME: check for const-ness
+void DividingStruct::printDivision() const
 {
 std::cout << "divide " << (this->multiplier.integer ? "after" : "before") << " = " << this->divide() << std::endl;
 }
