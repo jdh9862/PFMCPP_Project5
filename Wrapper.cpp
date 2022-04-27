@@ -1,4 +1,6 @@
 #include "Wrapper.h"
+#include "FancyPrinter.h"
+#include "DividingStruct.h"
 
 AnimalWrapper::AnimalWrapper::AnimalWrapper(Animal* ptr) : animalPtr(ptr) {}
 AnimalWrapper::AnimalWrapper::~AnimalWrapper()
