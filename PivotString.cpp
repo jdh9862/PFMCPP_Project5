@@ -1,50 +1,44 @@
 #include <iostream>
 #include "PivotString.h"
 
-PivotString::PivotString(
-        const std::string &string_,
-        bool reversePivot_,
-        bool reverseString_,
-        unsigned long pivotIndex_)
-        : string(string_),
-          reversePivot(reversePivot_),
-          reverseString(reverseString_)
+PivotString::PivotString(const std::string &string_, bool reversePivot_, bool reverseString_, unsigned long pivotIndex_) :
+string(string_),
+reversePivot(reversePivot_),
+reverseString(reverseString_)
 {
-    this->pivotIndex = pivotIndex_ > string_.length()
-                       ? string_.length() / 2
-                       : pivotIndex_;
+    pivotIndex = pivotIndex_ > string_.length() ? string_.length() / 2 : pivotIndex_;
 }
 
 PivotString::~PivotString()
 {
-    std::cout << "PivotString " << this->getFull() << " was called " << this->calls
+    std::cout << "PivotString " << getFull() << " was called " << calls
               << " times" << std::endl;
 }
 
 std::string PivotString::getPart(bool first)
 {
-    ++this->calls;
+    ++calls;
     return first
-           ? this->string.substr(0, this->pivotIndex)
-           : this->string.substr(this->pivotIndex, this->string.length() - this->pivotIndex);
+           ? string.substr(0, pivotIndex)
+           : string.substr(pivotIndex, string.length() - pivotIndex);
 }
 
 std::string PivotString::getFull()
 {
-    ++this->calls;
-    std::string first = this->getPart();
-    std::string second = this->getPart(false);
-    if (this->reverseString)
+    ++calls;
+    std::string first = getPart();
+    std::string second = getPart(false);
+    if (reverseString)
     {
-        first = this->reverse(first);
-        second = this->reverse(second);
+        first = reverse(first);
+        second = reverse(second);
     }
-    return this->reversePivot ? second + first : first + second;
+    return reversePivot ? second + first : first + second;
 }
 
 std::string PivotString::reverse(std::string string_)
 {
-    ++this->calls;
+    ++calls;
     std::string reversed;
     while (reversed.length() < string_.length())
     {

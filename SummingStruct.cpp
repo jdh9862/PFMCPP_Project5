@@ -1,10 +1,10 @@
 #include "SummingStruct.h"
 
-SummingStruct::SummingStruct(float first, float second)
-        : firstDouble(static_cast<double>(first)),
-          secondDouble(static_cast<double>(second)),
-          firstFloat(first),
-          secondFloat(second)
+SummingStruct::SummingStruct(float first, float second) :
+firstDouble(static_cast<double>(first)),
+secondDouble(static_cast<double>(second)),
+firstFloat(first),
+secondFloat(second)
 {
 }
 
@@ -15,21 +15,21 @@ SummingStruct::~SummingStruct()
 
 void SummingStruct::setInteger(int newValue)
 {
-    this->integer = 0;
-    while (this->integer < abs(newValue))
+    integer = 0;
+    while (integer < abs(newValue))
     {
-        ++this->integer;
+        ++integer;
     }
 }
 
 double SummingStruct::sumAll() const
 {
-    return double(this->sumFloats()) + this->firstDouble + this->secondDouble + this->integer;
+    return double(sumFloats()) + firstDouble + secondDouble + integer;
 }
 
 float SummingStruct::sumFloats() const
 {
-    return this->firstFloat + this->secondFloat;
+    return firstFloat + secondFloat;
 }
 
 void SummingStruct::printSum(bool onlyFloats)
@@ -44,9 +44,8 @@ void SummingStruct::printSum(bool onlyFloats)
     }
 }
 
-SummingStruct::MultiplierStruct::MultiplierStruct(
-        const SummingStruct& summingStruct)
-: firstDouble(summingStruct.firstDouble),
+SummingStruct::MultiplierStruct::MultiplierStruct(const SummingStruct& summingStruct):
+firstDouble(summingStruct.firstDouble),
 secondDouble(summingStruct.secondDouble),
 firstFloat(summingStruct.firstFloat),
 secondFloat(summingStruct.secondFloat)
@@ -63,18 +62,18 @@ void SummingStruct::MultiplierStruct::incrementInteger(unsigned int added)
     while (added > 0)
     {
         --added;
-        ++this->integer;
+        ++integer;
     }
 }
 
 double SummingStruct::MultiplierStruct::multiplyAll() const
 {
-    return double(multiplyFloats()) * this->firstDouble * this->secondDouble * this->integer;
+    return double(multiplyFloats()) * firstDouble * secondDouble * integer;
 }
 
 float SummingStruct::MultiplierStruct::multiplyFloats() const
 {
-    return this->firstFloat * this->secondFloat;
+    return firstFloat * secondFloat;
 }
 
 void SummingStruct::MultiplierStruct::printMultiply(bool onlyFloats)

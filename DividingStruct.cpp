@@ -1,7 +1,7 @@
 #include "DividingStruct.h"
 
-DividingStruct::DividingStruct(const SummingStruct& s)
-        : summing(s), multiplier(s)
+DividingStruct::DividingStruct(const SummingStruct& s) :
+summing(s), multiplier(s)
 {
 }
 
@@ -12,13 +12,13 @@ DividingStruct::~DividingStruct()
 
 double DividingStruct::divide() const
 {
-    return this->multiplier.multiplyAll() / this->summing.sumAll();
+    return multiplier.multiplyAll() / summing.sumAll();
 }
 
 void DividingStruct::modifyIntegers(unsigned int i)
 {
-    this->summing.setInteger(int(i));
-    this->multiplier.incrementInteger(i);
+    summing.setInteger(int(i));
+    multiplier.incrementInteger(i);
 }
 
 void DividingStruct::printDivision() // FIXME: check for const-ness
