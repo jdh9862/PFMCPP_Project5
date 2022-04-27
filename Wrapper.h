@@ -2,7 +2,7 @@
 
 //struct Animal;
 #include "Animal.h" //needed for Animal::Clock
-struct PivotString;
+class PivotString;
 // struct SummingStruct;
 #include "SummingStruct.h" //needed for SummingStruct::MultiplierStruct
 
