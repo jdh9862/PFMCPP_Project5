@@ -1,6 +1,13 @@
-#include "Animal.h"
-#include "FancyPrinter.h"
-#include "DividingStruct.h"
+#pragma once
+
+//struct Animal;
+#include "Animal.h" //needed for Animal::Clock
+struct PivotString;
+// struct SummingStruct;
+#include "SummingStruct.h" //needed for SummingStruct::MultiplierStruct
+
+struct FancyPrinter;
+struct DividingStruct;
 
 struct AnimalWrapper
 {
