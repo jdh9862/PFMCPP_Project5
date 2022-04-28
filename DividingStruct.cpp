@@ -22,5 +22,5 @@ void DividingStruct::modifyIntegers(unsigned int i)
 
 void DividingStruct::printDivision() const
 {
-std::cout << "divide " << (this->multiplier.integer ? "after" : "before") << " = " << this->divide() << std::endl;
+    std::cout << "divide " << (this->multiplier.integer ? "after" : "before") << " = " << this->divide() << std::endl;
 }
